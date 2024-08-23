@@ -59,16 +59,16 @@ public class Bank {
     }
 
     public double calculateTotalBankBalance() {
-        double totalBalance = 0.0;
+        double Balance = 0.0;
 
         for (Department department : departments){
             for (Customer customer: department.getCustomers()){
                 for(CustomerAccount customerAccount: customer.getAccounts()){
-                    totalBalance+= customerAccount.getAccount().getBalance();
+                    Balance+= customerAccount.getAccount().getBalance();
                 }
             }
         }
-        return totalBalance;
+        return Balance;
     }
 
     @Override
