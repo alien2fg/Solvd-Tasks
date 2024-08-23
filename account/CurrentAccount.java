@@ -11,7 +11,7 @@ public class CurrentAccount extends Account {
         this.overdraftLimit = overdraftLimit;
     }
 
-    // Getter and setter for overdraftLimit
+
     public double getOverdraftLimit() {
         return overdraftLimit;
     }
@@ -40,7 +40,7 @@ public class CurrentAccount extends Account {
         System.out.println("Deposit description: " + description);
     }
 
-    // Implementing withdraw methods considering overdraft limit
+
     @Override
     public void withdraw(double amount) {
         if (amount <= 0) {

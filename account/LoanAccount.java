@@ -18,7 +18,7 @@ public class LoanAccount extends Account {
         this.loanStartDate = loanStartDate;
     }
 
-    // Calculate the monthly payment based on the loan details
+
     public double calculateMonthlyPayment() {
         double monthlyRate = interestRate / 100 / 12;
         int numberOfPayments = loanDurationInMonths;
@@ -30,13 +30,13 @@ public class LoanAccount extends Account {
         if (amount <= 0) {
             throw new IllegalArgumentException("Payment amount must be positive.");
         }
-        // Subtract the payment from the loan amount
+
         loanAmount -= amount;
-        // Ensure loan amount does not go negative
+
         if (loanAmount < 0) {
             loanAmount = 0;
         }
-        // Update the account balance to reflect the payment
+
         setBalance(getBalance() + amount);
     }
 
@@ -45,18 +45,18 @@ public class LoanAccount extends Account {
         if (amount <= 0) {
             throw new IllegalArgumentException("Payment amount must be positive.");
         }
-        // Subtract the payment from the loan amount
+
         loanAmount -= amount;
-        // Ensure loan amount does not go negative
+
         if (loanAmount < 0) {
             loanAmount = 0;
         }
-        // Update the account balance to reflect the payment
+
         setBalance(getBalance() + amount);
         System.out.println("Deposit description: " + description);
     }
 
-    // Implementing withdraw methods
+
     @Override
     public void withdraw(double amount) {
         throw new UnsupportedOperationException("Withdrawals are not supported for loan accounts.");
