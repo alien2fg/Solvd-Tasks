@@ -9,7 +9,7 @@ import java.util.Objects;
 public class Bank {
     private String name;
     private Department[] departments;
-    private int departmentCount=0;
+    private int departmentCount;
 
     public Bank(String name) {
         this.departments = new Department[1];

@@ -10,7 +10,7 @@ public class CustomerAccount {
     private Customer customer;
     private Account account;
     private Transactions[] transactions;
-    private static int numberOfAccounts =0;
+    private static int numberOfAccounts;
 
     public CustomerAccount(Account account, Customer customer, Transactions[] transactions) {
         this.account = account;

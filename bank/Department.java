@@ -9,7 +9,7 @@ public class Department {
     private String name;
     private String departmentlocation;
     private Customer[] customers;
-    private int customerCount = 0;
+    private int customerCount;
 
     public Department(String departmentlocation, String name) {
         this.departmentlocation=departmentlocation;

@@ -10,7 +10,7 @@ public class Customer {
     private LocalDate dateOfBirth;
     private CustomerAddress customerAddress;
     private CustomerAccount[] accounts;
-    private int customerAccountsSize=0;
+    private int customerAccountsSize;
 
     public Customer(CustomerAddress customerAddress, LocalDate dateOfBirth, String firstName, String lastName) {
         this.customerAddress = customerAddress;
