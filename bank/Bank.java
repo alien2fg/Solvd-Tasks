@@ -3,6 +3,9 @@ package bank;
 import customer.Customer;
 import customer.CustomerAccount;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 public class Bank {
     private String name;
     private Department[] departments;
@@ -66,5 +69,27 @@ public class Bank {
             }
         }
         return totalBalance;
+    }
+
+    @Override
+    public String toString() {
+        return "Bank{" +
+                "departmentCount=" + departmentCount +
+                ", name='" + name + '\'' +
+                ", departments=" + Arrays.toString(departments) +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Bank bank = (Bank) object;
+        return departmentCount == bank.departmentCount && Objects.equals(name, bank.name) && Objects.deepEquals(departments, bank.departments);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, Arrays.hashCode(departments), departmentCount);
     }
 }

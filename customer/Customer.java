@@ -2,6 +2,7 @@ package customer;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Customer {
     private String firstName;
@@ -91,5 +92,18 @@ public class Customer {
                 ", customerAddress=" + customerAddress +
                 ", customerAccountsSize=" + customerAccountsSize +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Customer customer = (Customer) object;
+        return customerAccountsSize == customer.customerAccountsSize && Objects.equals(firstName, customer.firstName) && Objects.equals(lastName, customer.lastName) && Objects.equals(dateOfBirth, customer.dateOfBirth) && Objects.equals(customerAddress, customer.customerAddress) && Objects.deepEquals(accounts, customer.accounts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName, dateOfBirth, customerAddress, Arrays.hashCode(accounts), customerAccountsSize);
     }
 }

@@ -4,6 +4,7 @@ import account.Account;
 import account.Transactions;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class CustomerAccount {
     private Customer customer;
@@ -56,5 +57,18 @@ public class CustomerAccount {
                 ", customer=" + customer +
                 ", transactions=" + Arrays.toString(transactions) +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        CustomerAccount that = (CustomerAccount) object;
+        return Objects.equals(customer, that.customer) && Objects.equals(account, that.account) && Objects.deepEquals(transactions, that.transactions);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(customer, account, Arrays.hashCode(transactions));
     }
 }

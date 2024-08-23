@@ -1,6 +1,7 @@
 package account;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class CurrentAccount extends Account {
     private double overdraftLimit;
@@ -22,7 +23,24 @@ public class CurrentAccount extends Account {
         this.overdraftLimit = overdraftLimit;
     }
 
-    // Overriding withdraw to consider overdraft limit
+    @Override
+    public void deposit(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Deposit amount must be positive.");
+        }
+        setBalance(getBalance() + amount);
+    }
+
+    @Override
+    public void deposit(double amount, String description) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Deposit amount must be positive.");
+        }
+        setBalance(getBalance() + amount);
+        System.out.println("Deposit description: " + description);
+    }
+
+    // Implementing withdraw methods considering overdraft limit
     @Override
     public void withdraw(double amount) {
         if (amount <= 0) {
@@ -30,13 +48,42 @@ public class CurrentAccount extends Account {
         }
         double newBalance = getBalance() - amount;
         if (newBalance < -overdraftLimit) {
-            throw new IllegalArgumentException("Insufficient funds and overdraft limit exceeded.");
+            System.out.println("Insufficient funds and overdraft limit exceeded.");
+        } else {
+            setBalance(newBalance);
         }
-        super.withdraw(amount); // Proceed with withdrawal if within overdraft limit
+    }
+
+    @Override
+    public void withdraw(double amount, String reason) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Withdrawal amount must be positive.");
+        }
+        double newBalance = getBalance() - amount;
+        if (newBalance < -overdraftLimit) {
+            System.out.println("Insufficient funds and overdraft limit exceeded.");
+        } else {
+            setBalance(newBalance);
+            System.out.println("Reason for withdrawal: " + reason);
+        }
     }
 
     @Override
     public String toString() {
         return super.toString() + " | Overdraft Limit: " + overdraftLimit;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        CurrentAccount that = (CurrentAccount) object;
+        return Double.compare(overdraftLimit, that.overdraftLimit) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), overdraftLimit);
     }
 }

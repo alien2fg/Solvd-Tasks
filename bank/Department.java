@@ -2,6 +2,9 @@ package bank;
 
 import customer.Customer;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 public class Department {
     private String name;
     private String departmentlocation;
@@ -63,5 +66,28 @@ public class Department {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Department{" +
+                "customerCount=" + customerCount +
+                ", name='" + name + '\'' +
+                ", departmentlocation='" + departmentlocation + '\'' +
+                ", customers=" + Arrays.toString(customers) +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Department that = (Department) object;
+        return customerCount == that.customerCount && Objects.equals(name, that.name) && Objects.equals(departmentlocation, that.departmentlocation) && Objects.deepEquals(customers, that.customers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, departmentlocation, Arrays.hashCode(customers), customerCount);
     }
 }

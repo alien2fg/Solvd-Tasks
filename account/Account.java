@@ -1,11 +1,12 @@
 package account;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
-public class Account {
-    private String accountNumber;
-    private LocalDate dateOpened;
-    private double balance;
+public abstract class Account {
+    protected String accountNumber;
+    protected LocalDate dateOpened;
+    protected double balance; //?
 
     public Account(String accountNumber, double balance, LocalDate dateOpened) {
         this.accountNumber = accountNumber;
@@ -13,31 +14,11 @@ public class Account {
         this.dateOpened = dateOpened;
     }
 
-    public void deposit(double amount){
-        balance+=amount;
-    }
+    public abstract void deposit(double amount);
+    public abstract void deposit(double amount, String description);
+    public abstract void withdraw(double amount);
+    public abstract void withdraw(double amount, String reason);
 
-    public void deposit(double amount, String description) {
-        balance += amount;
-        System.out.println(description);
-    }
-
-    public void withdraw(double amount){
-        if (amount<=balance){
-            balance-=amount;
-        }else{
-            System.out.println("Insufficient funds");
-        }
-    }
-
-    public void withdraw(double amount, String reason) {
-        if (amount <= balance) {
-            balance -= amount;
-            System.out.println("Reason for withdrawal: " + reason);
-        } else {
-            System.out.println("Insufficient funds");
-        }
-    }
 
     public String getAccountNumber() {
         return accountNumber;
@@ -70,5 +51,18 @@ public class Account {
                 ", dateOpened=" + dateOpened +
                 ", balance=" + balance +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Account account = (Account) object;
+        return Double.compare(balance, account.balance) == 0 && Objects.equals(accountNumber, account.accountNumber) && Objects.equals(dateOpened, account.dateOpened);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(accountNumber, dateOpened, balance);
     }
 }

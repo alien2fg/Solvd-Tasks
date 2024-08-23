@@ -2,6 +2,7 @@ package account;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Objects;
 
 public class LoanAccount extends Account {
     private double loanAmount;
@@ -24,7 +25,6 @@ public class LoanAccount extends Account {
         return loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
     }
 
-    // Apply a payment towards the loan balance
     @Override
     public void deposit(double amount) {
         if (amount <= 0) {
@@ -36,10 +36,37 @@ public class LoanAccount extends Account {
         if (loanAmount < 0) {
             loanAmount = 0;
         }
-        super.deposit(amount); // Record the payment in the account balance
+        // Update the account balance to reflect the payment
+        setBalance(getBalance() + amount);
     }
 
-    // Getters and setters for loan details
+    @Override
+    public void deposit(double amount, String description) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Payment amount must be positive.");
+        }
+        // Subtract the payment from the loan amount
+        loanAmount -= amount;
+        // Ensure loan amount does not go negative
+        if (loanAmount < 0) {
+            loanAmount = 0;
+        }
+        // Update the account balance to reflect the payment
+        setBalance(getBalance() + amount);
+        System.out.println("Deposit description: " + description);
+    }
+
+    // Implementing withdraw methods
+    @Override
+    public void withdraw(double amount) {
+        throw new UnsupportedOperationException("Withdrawals are not supported for loan accounts.");
+    }
+
+    @Override
+    public void withdraw(double amount, String reason) {
+        throw new UnsupportedOperationException("Withdrawals are not supported for loan accounts.");
+    }
+
     public double getLoanAmount() {
         return loanAmount;
     }
@@ -84,5 +111,19 @@ public class LoanAccount extends Account {
     @Override
     public String toString() {
         return super.toString() + " | Loan Amount: " + loanAmount + " | Interest Rate: " + interestRate + "% | Duration: " + loanDurationInMonths + " months";
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        LoanAccount that = (LoanAccount) object;
+        return Double.compare(loanAmount, that.loanAmount) == 0 && Double.compare(interestRate, that.interestRate) == 0 && loanDurationInMonths == that.loanDurationInMonths && Objects.equals(loanStartDate, that.loanStartDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), loanAmount, interestRate, loanStartDate, loanDurationInMonths);
     }
 }

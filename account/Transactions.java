@@ -1,6 +1,7 @@
 package account;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Transactions {
     private LocalDate transactionDate;
@@ -44,5 +45,18 @@ public class Transactions {
                 ", transactionDate=" + transactionDate +
                 ", description='" + description + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Transactions that = (Transactions) object;
+        return Double.compare(amount, that.amount) == 0 && Objects.equals(transactionDate, that.transactionDate) && Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(transactionDate, amount, description);
     }
 }

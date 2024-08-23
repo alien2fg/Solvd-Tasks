@@ -1,6 +1,7 @@
 package account;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class SavingsAccount extends Account {
     private double interestRate;
@@ -36,22 +37,50 @@ public class SavingsAccount extends Account {
 
     @Override
     public void deposit(double amount) {
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Deposit amount must be positive.");
-        }
-        super.deposit(amount);
+        setBalance(getBalance() + amount);
+    }
+
+    @Override
+    public void deposit(double amount, String description) {
+        setBalance(getBalance() + amount);
+        System.out.println("Deposit description: " + description);
     }
 
     @Override
     public void withdraw(double amount) {
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Withdrawal amount must be positive.");
+        if (amount <= getBalance()) {
+            setBalance(getBalance() - amount);
+        } else {
+            System.out.println("Insufficient funds");
         }
-        super.withdraw(amount);
+    }
+
+    @Override
+    public void withdraw(double amount, String reason) {
+        if (amount <= getBalance()) {
+            setBalance(getBalance() - amount);
+            System.out.println("Reason for withdrawal: " + reason);
+        } else {
+            System.out.println("Insufficient funds");
+        }
     }
 
     @Override
     public String toString() {
         return super.toString() + " | Interest Rate: " + interestRate + "%";
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        SavingsAccount that = (SavingsAccount) object;
+        return Double.compare(interestRate, that.interestRate) == 0 && Objects.equals(lastInterestAppliedDate, that.lastInterestAppliedDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), interestRate, lastInterestAppliedDate);
     }
 }
