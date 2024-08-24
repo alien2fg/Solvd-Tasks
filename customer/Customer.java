@@ -5,19 +5,14 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class Customer {
-    private String firstName;
-    private String lastName;
-    private LocalDate dateOfBirth;
-    private CustomerAddress customerAddress;
+    private CustomerData customerData;
     private CustomerAccount[] accounts;
     private int customerAccountsSize;
 
-    public Customer(CustomerAddress customerAddress, LocalDate dateOfBirth, String firstName, String lastName) {
-        this.customerAddress = customerAddress;
-        this.dateOfBirth = dateOfBirth;
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public Customer(CustomerData customerData) {
         this.accounts = new CustomerAccount[1];
+        this.customerAccountsSize = customerAccountsSize;
+        this.customerData = customerData;
     }
 
     public void addCustomerAccount(CustomerAccount customerAccount) {
@@ -38,8 +33,13 @@ public class Customer {
         accounts=newCustomerAccount;
     }
 
+    public void printCustomerDetails() {
+        System.out.println("Customer Details:");
+        System.out.println(this);
+    }
+
     public String getFullName() {
-        return firstName + " " + lastName;
+        return customerData.getFirstName() + " " + customerData.getLastName();
     }
 
     public CustomerAccount[] getAccounts() {
@@ -50,48 +50,43 @@ public class Customer {
         this.accounts = accounts;
     }
 
-    public CustomerAddress getCustomerAddress() {
-        return customerAddress;
+    public int getCustomerAccountsSize() {
+        return customerAccountsSize;
     }
 
-    public void setCustomerAddress(CustomerAddress customerAddress) {
-        this.customerAddress = customerAddress;
+    public void setCustomerAccountsSize(int customerAccountsSize) {
+        this.customerAccountsSize = customerAccountsSize;
     }
 
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
+    public CustomerData getCustomerData() {
+        return customerData;
     }
 
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setCustomerData(CustomerData customerData) {
+        this.customerData = customerData;
     }
 
     @Override
     public String toString() {
-        return "Customer{" +
-                "accounts=" + Arrays.toString(accounts) +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
-                ", customerAddress=" + customerAddress +
-                ", customerAccountsSize=" + customerAccountsSize +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("Customer{")
+                .append("fullName='").append(getFullName()).append('\'')
+                .append(", dateOfBirth=").append(customerData.getDateOfBirth())
+                .append(", address=").append(customerData.getCustomerAddress())
+                .append(", numberOfAccounts=").append(customerAccountsSize)
+                .append(", accounts=[");
+
+        if (accounts != null && customerAccountsSize > 0) {
+            for (int i = 0; i < customerAccountsSize; i++) {
+                if (i > 0) sb.append(", ");
+                sb.append("Account ").append(i + 1).append(": ").append(accounts[i].toString());
+            }
+        } else {
+            sb.append("No accounts");
+        }
+
+        sb.append("]}");
+        return sb.toString();
     }
 
     @Override
@@ -99,11 +94,11 @@ public class Customer {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         Customer customer = (Customer) object;
-        return customerAccountsSize == customer.customerAccountsSize && Objects.equals(firstName, customer.firstName) && Objects.equals(lastName, customer.lastName) && Objects.equals(dateOfBirth, customer.dateOfBirth) && Objects.equals(customerAddress, customer.customerAddress) && Objects.deepEquals(accounts, customer.accounts);
+        return customerAccountsSize == customer.customerAccountsSize && Objects.equals(customerData, customer.customerData) && Objects.deepEquals(accounts, customer.accounts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, lastName, dateOfBirth, customerAddress, Arrays.hashCode(accounts), customerAccountsSize);
+        return Objects.hash(customerData, Arrays.hashCode(accounts), customerAccountsSize);
     }
 }

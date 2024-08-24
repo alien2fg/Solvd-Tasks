@@ -4,59 +4,173 @@ import bank.Department;
 import customer.Customer;
 import customer.CustomerAccount;
 import customer.CustomerAddress;
+import customer.CustomerData;
 
 import java.time.LocalDate;
+import java.util.Scanner;
 
 public class Main {
+    private static Scanner scanner = new Scanner(System.in);
+    private static Bank bank = new Bank("My Bank");
+    private static Customer[] customers = new Customer[1];
+    private static int customerCount = 0;
+
     public static void main(String[] args) {
-        Bank bank = new Bank("My Bank");
 
-        // Create departments
-        Department department1 = new Department("New York", "Downtown Branch");
-        Department department2 = new Department("San Francisco", "Main Branch");
+        // Bank and Department Information
+        System.out.println("Welcome to the Bank Management System");
+        System.out.println("Enter department location:");
+        String departmentlocation = scanner.nextLine();
+        System.out.println("Enter department name:");
+        String departmentName = scanner.nextLine();
+        Department department = new Department(departmentlocation,departmentName);
+        System.out.println("Bank: " + bank.getName());
+        System.out.println("Department: " + department.getName());
+        bank.addDepartment(department);
 
-        // Add departments to the bank
-        bank.addDepartment(department1);
-        bank.addDepartment(department2);
+        boolean running = true;
+        while (running) {
+            displayMenu();
+            int choice = Integer.parseInt(scanner.nextLine());
+            switch (choice) {
+                case 1:
+                    addCustomer(department);
+                    break;
+                case 2:
+                    addAccount(department);
+                    break;
+                case 3:
+                    displayCustomers(department);
+                    break;
+                case 4:
+                    printTotalBalance();
+                    break;
+                case 5:
+                    running = false;
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
 
-        // Create customers
-        CustomerAddress address1 = new CustomerAddress("123 Main St", "New York");
-        Customer customer1 = new Customer(address1, LocalDate.of(1980, 5, 15), "John", "Doe");
+    }
 
-        CustomerAddress address2 = new CustomerAddress("456 Elm St", "San Francisco");
-        Customer customer2 = new Customer(address2, LocalDate.of(1990, 8, 25), "Jane", "Smith");
+    private static void displayMenu(){
+        System.out.println("\n--- Bank Menu ---");
+        System.out.println("1. Add Customer");
+        System.out.println("2. Add Account");
+        System.out.println("3. Display Customers");
+        System.out.println("4. Display total balance in the bank");
+        System.out.println("5. Exit");
+        System.out.print("Enter your choice: ");
+    }
 
-        // Create accounts
-        Account savingsAccount1 = new SavingsAccount("SA001", 1500.0, LocalDate.of(2022, 1, 1), 0.02);
-        Account currentAccount1 = new CurrentAccount("CA001", 500.0, LocalDate.of(2022, 1, 1), 100.0);
+    private static void addCustomer(Department department) {
+        System.out.println("Enter customer first name:");
+        String firstName = scanner.nextLine();
+        System.out.println("Enter customer last name:");
+        String lastName = scanner.nextLine();
+        System.out.println("Enter customer date of birth (YYYY-MM-DD):");
+        LocalDate dateOfBirth = LocalDate.parse(scanner.nextLine());
+        System.out.println("Enter customer address:");
+        System.out.println("Street:");
+        String street = scanner.nextLine();
+        System.out.println("City:");
+        String city = scanner.nextLine();
+        CustomerAddress address = new CustomerAddress(street, city);
 
-        Account savingsAccount2 = new SavingsAccount("SA002", 2500.0, LocalDate.of(2021, 6, 15), 0.03);
-        Account loanAccount1 = new LoanAccount("LA001", 1000.0, LocalDate.of(2021, 6, 15), 0.05, 5000.0, 12, LocalDate.of(2021, 6, 15));
+        // Resize the customer array if necessary
+        if (customerCount >= customers.length) {
+            Customer[] newCustomers = new Customer[customers.length + 1];
+            System.arraycopy(customers, 0, newCustomers, 0, customers.length);
+            customers = newCustomers;
+        }
 
-        // Create transactions
-        Transactions depositTransaction = new Transactions(500.0, "Deposit to savings", LocalDate.now());
-        Transactions withdrawalTransaction = new Transactions(100.0, "Withdrawal from current", LocalDate.now());
+        // Create and add the new customer
+        CustomerData customerData = new CustomerData(address, dateOfBirth,firstName,lastName);
+        Customer customer = new Customer(customerData);
+        customers[customerCount++] = customer;
+        department.addCustomer(customer); // Add the customer to the department
 
-        // Create customer accounts
-        CustomerAccount customerAccount1 = new CustomerAccount(savingsAccount1, customer1, new Transactions[]{depositTransaction});
-        CustomerAccount customerAccount2 = new CustomerAccount(currentAccount1, customer1, new Transactions[]{withdrawalTransaction});
+        System.out.println("Customer added successfully.");
+    }
 
-        CustomerAccount customerAccount3 = new CustomerAccount(savingsAccount2, customer2, new Transactions[]{depositTransaction});
-        CustomerAccount customerAccount4 = new CustomerAccount(loanAccount1, customer2, new Transactions[]{withdrawalTransaction});
+    private static void addAccount(Department department) {
+        System.out.println("Select customer by index (0 to " + (department.getCustomers().length - 1) + "):");
+        for (int i = 0; i < department.getCustomers().length; i++) {
+            System.out.println(i + ": " + department.getCustomers()[i].getFullName());
+        }
 
-        // Add customer accounts to customers
-        customer1.addCustomerAccount(customerAccount1);
-        customer1.addCustomerAccount(customerAccount2);
+        int customerIndex = Integer.parseInt(scanner.nextLine());
+        if (customerIndex < 0 || customerIndex >= department.getCustomers().length) {
+            System.out.println("Invalid customer index.");
+            return;
+        }
 
-        customer2.addCustomerAccount(customerAccount3);
-        customer2.addCustomerAccount(customerAccount4);
+        Customer customer = department.getCustomers()[customerIndex];
 
-        // Add customers to departments
-        department1.addCustomer(customer1);
-        department2.addCustomer(customer2);
+        System.out.println("Choose account type (1: Savings, 2: Loan, 3: Current):");
+        int accountType = Integer.parseInt(scanner.nextLine());
 
-        // Calculate and print total balance in the bank
+        System.out.println("Enter account number:");
+        String accountNumber = scanner.nextLine();
+        System.out.println("Enter initial balance:");
+        double balance = Double.parseDouble(scanner.nextLine());
+
+        Account account = null;
+        switch (accountType) {
+            case 1: // Savings Account
+                System.out.println("Enter interest rate (as a percentage):");
+                double interestRate = Double.parseDouble(scanner.nextLine());
+                account = new SavingsAccount(accountNumber, balance, LocalDate.now(), interestRate);
+                break;
+            case 2: // Loan Account
+                System.out.println("Enter loan amount:");
+                double loanAmount = Double.parseDouble(scanner.nextLine());
+                System.out.println("Enter interest rate (as a percentage):");
+                double loanInterestRate = Double.parseDouble(scanner.nextLine());
+                System.out.println("Enter loan duration in months:");
+                int duration = Integer.parseInt(scanner.nextLine());
+                System.out.println("Enter loan start date (YYYY-MM-DD):");
+                LocalDate loanStartDate = LocalDate.parse(scanner.nextLine());
+                account = new LoanAccount(accountNumber, balance, LocalDate.now(), loanAmount, loanInterestRate, duration, loanStartDate);
+                break;
+            case 3: // Current Account
+                System.out.println("Enter overdraft limit:");
+                double overdraftLimit = Double.parseDouble(scanner.nextLine());
+                account = new CurrentAccount(accountNumber, balance, LocalDate.now(), overdraftLimit);
+                break;
+            default:
+                System.out.println("Invalid account type.");
+                return;
+        }
+
+        System.out.println("Enter transaction description:");
+        String description = scanner.nextLine();
+        System.out.println("Enter transaction amount:");
+        double transactionAmount = Double.parseDouble(scanner.nextLine());
+        Transactions transaction = new Transactions(transactionAmount, description, LocalDate.now());
+
+        CustomerAccount customerAccount = new CustomerAccount(account, customer, new Transactions[]{transaction});
+        customer.addCustomerAccount(customerAccount);
+
+        System.out.println("Account added successfully.");
+    }
+
+    private static void displayCustomers(Department department) {
+        System.out.println("Customer Summary:");
+        for (Customer customer : department.getCustomers()) {
+            if (customer != null) {
+                System.out.println(customer);
+            }
+        }
+    }
+
+    private static void printTotalBalance(){
         double totalBalance = bank.calculateTotalBankBalance();
         System.out.println("Total balance in the bank: " + totalBalance);
     }
+
 }
+
+

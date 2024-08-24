@@ -53,9 +53,8 @@ public class CustomerAccount {
     @Override
     public String toString() {
         return "CustomerAccount{" +
-                "account=" + account +
-                ", customer=" + customer +
-                ", transactions=" + Arrays.toString(transactions) +
+                "account=" + (account != null ? account.toString() : "null") +
+                ", transactions=" + (transactions != null ? Arrays.toString(transactions) : "null") +
                 '}';
     }
 

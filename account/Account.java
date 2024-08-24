@@ -48,8 +48,8 @@ public abstract class Account {
     public String toString() {
         return "Account{" +
                 "accountNumber='" + accountNumber + '\'' +
-                ", dateOpened=" + dateOpened +
                 ", balance=" + balance +
+                ", creationDate=" + dateOpened +
                 '}';
     }
 
