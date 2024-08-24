@@ -1,5 +1,7 @@
 package account;
 
+import utils.FinancialUtils;
+
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Objects;
@@ -18,11 +20,13 @@ public class LoanAccount extends Account {
         this.loanStartDate = loanStartDate;
     }
 
+    public final double getMonthlyPayment() {
+        return FinancialUtils.calculateMonthlyLoanPayment(loanAmount, interestRate, loanDurationInMonths);
+    }
 
-    public double calculateMonthlyPayment() {
-        double monthlyRate = interestRate / 100 / 12;
-        int numberOfPayments = loanDurationInMonths;
-        return loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+    public final double getTotalLoanCost() {
+        double monthlyPayment = getMonthlyPayment();
+        return FinancialUtils.calculateTotalLoanCost(monthlyPayment, loanDurationInMonths);
     }
 
     @Override

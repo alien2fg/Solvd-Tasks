@@ -1,5 +1,7 @@
 package account;
 
+import utils.FinancialUtils;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -14,15 +16,18 @@ public class SavingsAccount extends Account {
     }
 
 
-    public void applyInterest() {
+    public final void applyInterest() {
         LocalDate now = LocalDate.now();
         if (now.isAfter(lastInterestAppliedDate.plusYears(1))) {
-            double interest = getBalance() * (interestRate / 100);
+            double interest = FinancialUtils.calculateCompoundInterest(getBalance(), interestRate, 1, 1);
             deposit(interest);
             lastInterestAppliedDate = now;
         }
     }
 
+    public final double getFutureValue(int years) {
+        return FinancialUtils.predictFutureValue(getBalance(), interestRate, 4, years);
+    }
 
     public double getInterestRate() {
         return interestRate;

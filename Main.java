@@ -5,6 +5,7 @@ import customer.Customer;
 import customer.CustomerAccount;
 import customer.CustomerAddress;
 import customer.CustomerData;
+import utils.FinancialUtils;
 
 import java.time.LocalDate;
 import java.util.Scanner;
@@ -123,6 +124,10 @@ public class Main {
                 System.out.println("Enter interest rate (as a percentage):");
                 double interestRate = Double.parseDouble(scanner.nextLine());
                 account = new SavingsAccount(accountNumber, balance, LocalDate.now(), interestRate);
+
+                // Demonstrate FinancialUtils methods
+                double futureValue = ((SavingsAccount) account).getFutureValue(5); // Example for 5 years
+                System.out.println("Predicted future value after 5 years: " + FinancialUtils.roundToTwoDecimalPlaces(futureValue));
                 break;
             case 2: // Loan Account
                 System.out.println("Enter loan amount:");
@@ -134,11 +139,19 @@ public class Main {
                 System.out.println("Enter loan start date (YYYY-MM-DD):");
                 LocalDate loanStartDate = LocalDate.parse(scanner.nextLine());
                 account = new LoanAccount(accountNumber, balance, LocalDate.now(), loanAmount, loanInterestRate, duration, loanStartDate);
+
+                // Demonstrate FinancialUtils methods
+                double monthlyPayment = ((LoanAccount) account).getMonthlyPayment();
+                double totalCost = ((LoanAccount) account).getTotalLoanCost();
+                System.out.println("Calculated monthly payment for loan account: " + FinancialUtils.roundToTwoDecimalPlaces(monthlyPayment));
+                System.out.println("Total cost of the loan: " + FinancialUtils.roundToTwoDecimalPlaces(totalCost));
                 break;
             case 3: // Current Account
                 System.out.println("Enter overdraft limit:");
                 double overdraftLimit = Double.parseDouble(scanner.nextLine());
                 account = new CurrentAccount(accountNumber, balance, LocalDate.now(), overdraftLimit);
+
+                // CurrentAccount specific calculations can be added here if needed
                 break;
             default:
                 System.out.println("Invalid account type.");
