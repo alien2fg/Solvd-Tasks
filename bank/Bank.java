@@ -7,9 +7,19 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class Bank {
+    private static final String DEFAULT_NAME;
     private String name;
     private Department[] departments;
     private int departmentCount;
+
+    static {
+        DEFAULT_NAME = "My Bank";
+        System.out.println("Static block in Bank class executed. Default bank name set to: " + DEFAULT_NAME);
+    }
+
+    public Bank() {
+        this(DEFAULT_NAME);
+    }
 
     public Bank(String name) {
         this.departments = new Department[1];
