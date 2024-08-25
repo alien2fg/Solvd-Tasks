@@ -1,14 +1,14 @@
-package account;
+package transaction;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Transactions {
+public class Transaction {
     private LocalDate transactionDate;
     private double amount;
     private String description;
 
-    public Transactions(double amount, String description, LocalDate transactionDate) {
+    public Transaction(double amount, String description, LocalDate transactionDate) {
         this.amount = amount;
         this.description = description;
         this.transactionDate = transactionDate;
@@ -51,7 +51,7 @@ public class Transactions {
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        Transactions that = (Transactions) object;
+        Transaction that = (Transaction) object;
         return Double.compare(amount, that.amount) == 0 && Objects.equals(transactionDate, that.transactionDate) && Objects.equals(description, that.description);
     }
 

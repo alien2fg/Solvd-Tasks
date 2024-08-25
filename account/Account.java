@@ -3,7 +3,7 @@ package account;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public abstract class Account {
+public abstract class Account implements AccountManageable{
     protected String accountNumber;
     protected LocalDate dateOpened;
     protected double balance; //?

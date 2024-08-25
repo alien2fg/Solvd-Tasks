@@ -1,12 +1,11 @@
 package account;
 
-import utils.FinancialUtils;
+import util.FinancialUtils;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.Objects;
 
-public class LoanAccount extends Account {
+public class LoanAccount extends Account implements LoanManageable{
     private double loanAmount;
     private double interestRate; // Annual interest rate
     private LocalDate loanStartDate;
@@ -20,12 +19,12 @@ public class LoanAccount extends Account {
         this.loanStartDate = loanStartDate;
     }
 
-    public final double getMonthlyPayment() {
+    public final double calculateMonthlyPayment() {
         return FinancialUtils.calculateMonthlyLoanPayment(loanAmount, interestRate, loanDurationInMonths);
     }
 
-    public final double getTotalLoanCost() {
-        double monthlyPayment = getMonthlyPayment();
+    public final double calculateTotalLoanCost() {
+        double monthlyPayment = calculateMonthlyPayment();
         return FinancialUtils.calculateTotalLoanCost(monthlyPayment, loanDurationInMonths);
     }
 

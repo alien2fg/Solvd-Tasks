@@ -29,9 +29,7 @@ public class Department {
         int newCustomerArraySize=customers.length+1;
         Customer[] newCustomers = new Customer[newCustomerArraySize];
 
-        for (int i = 0; i < customers.length; i++) {
-            newCustomers[i]=customers[i];
-        }
+        System.arraycopy(customers, 0, newCustomers, 0, customers.length);
 
         customers=newCustomers;
     }

@@ -1,18 +1,20 @@
 package customer;
 
 import account.Account;
-import account.Transactions;
+import transaction.Transaction;
+import transaction.TransactionProcessable;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class CustomerAccount {
+public class CustomerAccount implements TransactionProcessable {
     private Customer customer;
     private Account account;
-    private Transactions[] transactions;
+    private Transaction[] transactions;
     private static int numberOfAccounts;
 
-    public CustomerAccount(Account account, Customer customer, Transactions[] transactions) {
+    public CustomerAccount(Account account, Customer customer, Transaction[] transactions) {
         this.account = account;
         this.customer = customer;
         this.transactions = transactions;
@@ -42,12 +44,31 @@ public class CustomerAccount {
         CustomerAccount.numberOfAccounts = numberOfAccounts;
     }
 
-    public Transactions[] getTransactions() {
+    public Transaction[] getTransactions() {
         return transactions;
     }
 
-    public void setTransactions(Transactions[] transactions) {
+    public void setTransactions(Transaction[] transactions) {
         this.transactions = transactions;
+    }
+
+    @Override
+    public void addTransaction(double amount, String description, LocalDate date) {
+        Transaction newTransaction = new Transaction(amount, description, date);
+        Transaction[] newTransactions = new Transaction[transactions.length + 1];
+        System.arraycopy(transactions, 0, newTransactions, 0, transactions.length);
+        newTransactions[newTransactions.length - 1] = newTransaction;
+        this.transactions = newTransactions;
+    }
+
+    @Override
+    public double getTransactionAmount(LocalDate date) {
+        for (Transaction transaction : transactions) {
+            if (transaction.getTransactionDate().equals(date)) {
+                return transaction.getAmount();
+            }
+        }
+        return 0.0;
     }
 
     @Override

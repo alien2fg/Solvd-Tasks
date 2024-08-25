@@ -1,10 +1,9 @@
 package customer;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class Customer {
+public class Customer implements CustomerInfoProvider{
     private CustomerData customerData;
     private CustomerAccount[] accounts;
     private int customerAccountsSize;
@@ -26,9 +25,7 @@ public class Customer {
         int newcustomerAccountsSize=accounts.length+1;
         CustomerAccount[] newCustomerAccount = new CustomerAccount[newcustomerAccountsSize];
 
-        for (int i = 0; i < accounts.length; i++) {
-            newCustomerAccount[i]=accounts[i];
-        }
+        System.arraycopy(accounts, 0, newCustomerAccount, 0, accounts.length);
 
         accounts=newCustomerAccount;
     }
@@ -40,6 +37,10 @@ public class Customer {
 
     public String getFullName() {
         return customerData.getFirstName() + " " + customerData.getLastName();
+    }
+
+    public CustomerAddress getCustomerAddress() {
+        return customerData.getCustomerAddress();
     }
 
     public CustomerAccount[] getAccounts() {

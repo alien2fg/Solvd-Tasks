@@ -37,9 +37,7 @@ public class Bank {
         int newDepartmentArraySize=departments.length+1;
         Department[] newDepartmentsArray= new Department[newDepartmentArraySize];
 
-        for (int i = 0; i <departments.length; i++) {
-            newDepartmentsArray[i]=departments[i];
-        }
+        System.arraycopy(departments, 0, newDepartmentsArray, 0, departments.length);
 
         departments=newDepartmentsArray;
     }

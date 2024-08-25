@@ -1,4 +1,4 @@
-package utils;
+package util;
 
 public final class FinancialUtils {
 
