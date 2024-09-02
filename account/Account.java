@@ -1,12 +1,14 @@
 package account;
 
+import account.accountmanagable.AccountManageable;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
-public abstract class Account implements AccountManageable{
+public abstract class Account implements AccountManageable {
     protected String accountNumber;
     protected LocalDate dateOpened;
-    protected double balance; //?
+    protected double balance;
 
     public Account(String accountNumber, double balance, LocalDate dateOpened) {
         this.accountNumber = accountNumber;

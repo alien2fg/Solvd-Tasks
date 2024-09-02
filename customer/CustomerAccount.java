@@ -5,19 +5,18 @@ import transaction.Transaction;
 import transaction.TransactionProcessable;
 
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class CustomerAccount implements TransactionProcessable {
-    private Customer customer;
     private Account account;
-    private Transaction[] transactions;
+    private List<Transaction> transactions;
     private static int numberOfAccounts;
 
-    public CustomerAccount(Account account, Customer customer, Transaction[] transactions) {
+    public CustomerAccount(Account account, Transaction[] transactions) {
         this.account = account;
-        this.customer = customer;
-        this.transactions = transactions;
+        this.transactions = new ArrayList<>(List.of(transactions));
     }
 
     public Account getAccount() {
@@ -28,13 +27,6 @@ public class CustomerAccount implements TransactionProcessable {
         this.account = account;
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
 
     public static int getNumberOfAccounts() {
         return numberOfAccounts;
@@ -44,21 +36,18 @@ public class CustomerAccount implements TransactionProcessable {
         CustomerAccount.numberOfAccounts = numberOfAccounts;
     }
 
-    public Transaction[] getTransactions() {
+    public List<Transaction> getTransactions() {
         return transactions;
     }
 
-    public void setTransactions(Transaction[] transactions) {
+    public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
     }
 
     @Override
     public void addTransaction(double amount, String description, LocalDate date) {
         Transaction newTransaction = new Transaction(amount, description, date);
-        Transaction[] newTransactions = new Transaction[transactions.length + 1];
-        System.arraycopy(transactions, 0, newTransactions, 0, transactions.length);
-        newTransactions[newTransactions.length - 1] = newTransaction;
-        this.transactions = newTransactions;
+        this.transactions.add(newTransaction);
     }
 
     @Override
@@ -75,7 +64,7 @@ public class CustomerAccount implements TransactionProcessable {
     public String toString() {
         return "CustomerAccount{" +
                 "account=" + (account != null ? account.toString() : "null") +
-                ", transactions=" + (transactions != null ? Arrays.toString(transactions) : "null") +
+                ", transactions=" + (transactions != null ? transactions.toString() : "null") +
                 '}';
     }
 
@@ -84,11 +73,11 @@ public class CustomerAccount implements TransactionProcessable {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         CustomerAccount that = (CustomerAccount) object;
-        return Objects.equals(customer, that.customer) && Objects.equals(account, that.account) && Objects.deepEquals(transactions, that.transactions);
+        return Objects.equals(account, that.account) && Objects.equals(transactions, that.transactions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(customer, account, Arrays.hashCode(transactions));
+        return Objects.hash(account, transactions);
     }
 }

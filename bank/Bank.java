@@ -3,14 +3,15 @@ package bank;
 import customer.Customer;
 import customer.CustomerAccount;
 
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class Bank {
     private static final String DEFAULT_NAME;
     private String name;
-    private Department[] departments;
-    private int departmentCount;
+    private Set<Department> departments; //avoid duplication of departments
+
 
     static {
         DEFAULT_NAME = "My Bank";
@@ -22,48 +23,12 @@ public class Bank {
     }
 
     public Bank(String name) {
-        this.departments = new Department[1];
+        this.departments = new HashSet<>();
         this.name = name;
     }
 
     public void addDepartment(Department department) {
-        if (departmentCount>=departments.length){
-            expandDeparmentsArray();
-        }
-        departments[departmentCount++]=department;
-    }
-
-    public void expandDeparmentsArray(){
-        int newDepartmentArraySize=departments.length+1;
-        Department[] newDepartmentsArray= new Department[newDepartmentArraySize];
-
-        System.arraycopy(departments, 0, newDepartmentsArray, 0, departments.length);
-
-        departments=newDepartmentsArray;
-    }
-
-    public int getDepartmentCount() {
-        return departmentCount;
-    }
-
-    public void setDepartmentCount(int departmentCount) {
-        this.departmentCount = departmentCount;
-    }
-
-    public Department[] getDepartments() {
-        return departments;
-    }
-
-    public void setDepartments(Department[] departments) {
-        this.departments = departments;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        departments.add(department);
     }
 
     public double calculateTotalBankBalance() {
@@ -79,13 +44,20 @@ public class Bank {
         return Balance;
     }
 
-    @Override
-    public String toString() {
-        return "Bank{" +
-                "departmentCount=" + departmentCount +
-                ", name='" + name + '\'' +
-                ", departments=" + Arrays.toString(departments) +
-                '}';
+    public Set<Department> getDepartments() {
+        return departments;
+    }
+
+    public void setDepartments(Set<Department> departments) {
+        this.departments = departments;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -93,11 +65,19 @@ public class Bank {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         Bank bank = (Bank) object;
-        return departmentCount == bank.departmentCount && Objects.equals(name, bank.name) && Objects.deepEquals(departments, bank.departments);
+        return Objects.equals(name, bank.name) && Objects.equals(departments, bank.departments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, Arrays.hashCode(departments), departmentCount);
+        return Objects.hash(name, departments);
+    }
+
+    @Override
+    public String toString() {
+        return "Bank{" +
+                "departments=" + departments +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

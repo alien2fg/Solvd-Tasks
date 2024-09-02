@@ -105,17 +105,17 @@ public class Main {
 
     private static void addAccount(Scanner scanner, Department department) {
         try {
-            System.out.println("Select customer by index (0 to " + (department.getCustomers().length - 1) + "):");
-            for (int i = 0; i < department.getCustomers().length; i++) {
-                System.out.println(i + ": " + department.getCustomers()[i].getFullName());
+            System.out.println("Select customer by index (0 to " + (department.getCustomers().size() - 1) + "):");
+            for (int i = 0; i < department.getCustomers().size(); i++) {
+                System.out.println(i + ": " + department.getCustomers().get(i).getFullName());
             }
 
             int customerIndex = Integer.parseInt(scanner.nextLine());
-            if (customerIndex < 0 || customerIndex >= department.getCustomers().length) {
+            if (customerIndex < 0 || customerIndex >= department.getCustomers().size()) {
                 throw new InvalidCustomerIndexException("Invalid customer index.");
             }
 
-            Customer customer = department.getCustomers()[customerIndex];
+            Customer customer = department.getCustomers().get(customerIndex);
 
             System.out.println("Choose account type (1: Savings, 2: Loan, 3: Current):");
             int accountType = Integer.parseInt(scanner.nextLine());
@@ -173,7 +173,7 @@ public class Main {
             }
             Transaction transaction = new Transaction(transactionAmount, description, LocalDate.now());
 
-            CustomerAccount customerAccount = new CustomerAccount(account, customer, new Transaction[]{transaction});
+            CustomerAccount customerAccount = new CustomerAccount(account, new Transaction[]{transaction});
             customer.addCustomerAccount(customerAccount);
 
             System.out.println("Account added successfully.");
