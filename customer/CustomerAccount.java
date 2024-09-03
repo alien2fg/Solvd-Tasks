@@ -1,6 +1,9 @@
 package customer;
 
 import account.Account;
+import account.CurrentAccount;
+import account.LoanAccount;
+import account.SavingsAccount;
 import transaction.Transaction;
 import transaction.TransactionProcessable;
 
@@ -10,23 +13,49 @@ import java.util.List;
 import java.util.Objects;
 
 public class CustomerAccount implements TransactionProcessable {
-    private Account account;
+    private LoanAccount loanAccount;
+    private SavingsAccount savingsAccount;
+    private CurrentAccount currentAccount;
     private List<Transaction> transactions;
     private static int numberOfAccounts;
 
+
     public CustomerAccount(Account account, Transaction[] transactions) {
-        this.account = account;
         this.transactions = new ArrayList<>(List.of(transactions));
+        numberOfAccounts++;
+
+        if (account instanceof LoanAccount) {
+            this.loanAccount = (LoanAccount) account;
+        } else if (account instanceof SavingsAccount) {
+            this.savingsAccount = (SavingsAccount) account;
+        } else if (account instanceof CurrentAccount) {
+            this.currentAccount = (CurrentAccount) account;
+        }
     }
 
-    public Account getAccount() {
-        return account;
+    public LoanAccount getLoanAccount() {
+        return loanAccount;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setLoanAccount(LoanAccount loanAccount) {
+        this.loanAccount = loanAccount;
     }
 
+    public SavingsAccount getSavingsAccount() {
+        return savingsAccount;
+    }
+
+    public void setSavingsAccount(SavingsAccount savingsAccount) {
+        this.savingsAccount = savingsAccount;
+    }
+
+    public CurrentAccount getCurrentAccount() {
+        return currentAccount;
+    }
+
+    public void setCurrentAccount(CurrentAccount currentAccount) {
+        this.currentAccount = currentAccount;
+    }
 
     public static int getNumberOfAccounts() {
         return numberOfAccounts;
@@ -48,6 +77,30 @@ public class CustomerAccount implements TransactionProcessable {
     public void addTransaction(double amount, String description, LocalDate date) {
         Transaction newTransaction = new Transaction(amount, description, date);
         this.transactions.add(newTransaction);
+
+
+        if (currentAccount != null) {
+            if (amount >= 0) {
+                currentAccount.deposit(amount, description);
+            } else {
+                currentAccount.withdraw(-amount, description);
+            }
+        }
+        if (savingsAccount != null) {
+            if (amount >= 0) {
+                savingsAccount.deposit(amount, description);
+            } else {
+                savingsAccount.withdraw(-amount, description);
+            }
+        }
+        if (loanAccount != null) {
+            if (amount >= 0) {
+                loanAccount.deposit(amount, description);
+            } else {
+
+                System.out.println("Withdrawals are not supported for loan accounts.");
+            }
+        }
     }
 
     @Override
@@ -63,7 +116,9 @@ public class CustomerAccount implements TransactionProcessable {
     @Override
     public String toString() {
         return "CustomerAccount{" +
-                "account=" + (account != null ? account.toString() : "null") +
+                "loanAccount=" + (loanAccount != null ? loanAccount.toString() : "null") +
+                ", savingsAccount=" + (savingsAccount != null ? savingsAccount.toString() : "null") +
+                ", currentAccount=" + (currentAccount != null ? currentAccount.toString() : "null") +
                 ", transactions=" + (transactions != null ? transactions.toString() : "null") +
                 '}';
     }
@@ -73,11 +128,14 @@ public class CustomerAccount implements TransactionProcessable {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         CustomerAccount that = (CustomerAccount) object;
-        return Objects.equals(account, that.account) && Objects.equals(transactions, that.transactions);
+        return Objects.equals(loanAccount, that.loanAccount) &&
+                Objects.equals(savingsAccount, that.savingsAccount) &&
+                Objects.equals(currentAccount, that.currentAccount) &&
+                Objects.equals(transactions, that.transactions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(account, transactions);
+        return Objects.hash(loanAccount, savingsAccount, currentAccount, transactions);
     }
 }

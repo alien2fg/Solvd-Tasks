@@ -1,34 +1,24 @@
 package customer;
 
-import java.util.Arrays;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Customer implements CustomerInfoProvider{
     private CustomerData customerData;
-    private CustomerAccount[] accounts;
-    private int customerAccountsSize;
+    private List<CustomerAccount> accounts;
+
 
     public Customer(CustomerData customerData) {
-        this.accounts = new CustomerAccount[1];
-        this.customerAccountsSize = customerAccountsSize;
         this.customerData = customerData;
+        this.accounts=new ArrayList<>();
     }
 
     public void addCustomerAccount(CustomerAccount customerAccount) {
-        if (customerAccountsSize >= accounts.length) {
-            expandCustomerAccount();
-        }
-        accounts[customerAccountsSize++] = customerAccount;
+       accounts.add(customerAccount);
     }
 
-    public void expandCustomerAccount(){
-        int newcustomerAccountsSize=accounts.length+1;
-        CustomerAccount[] newCustomerAccount = new CustomerAccount[newcustomerAccountsSize];
-
-        System.arraycopy(accounts, 0, newCustomerAccount, 0, accounts.length);
-
-        accounts=newCustomerAccount;
-    }
 
     public void printCustomerDetails() {
         System.out.println("Customer Details:");
@@ -39,24 +29,16 @@ public class Customer implements CustomerInfoProvider{
         return customerData.getFirstName() + " " + customerData.getLastName();
     }
 
+    public List<CustomerAccount> getAccounts() {
+        return accounts;
+    }
+
     public CustomerAddress getCustomerAddress() {
         return customerData.getCustomerAddress();
     }
 
-    public CustomerAccount[] getAccounts() {
-        return accounts;
-    }
-
-    public void setAccounts(CustomerAccount[] accounts) {
+    public void setAccounts(List<CustomerAccount> accounts) {
         this.accounts = accounts;
-    }
-
-    public int getCustomerAccountsSize() {
-        return customerAccountsSize;
-    }
-
-    public void setCustomerAccountsSize(int customerAccountsSize) {
-        this.customerAccountsSize = customerAccountsSize;
     }
 
     public CustomerData getCustomerData() {
@@ -68,38 +50,23 @@ public class Customer implements CustomerInfoProvider{
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Customer{")
-                .append("fullName='").append(getFullName()).append('\'')
-                .append(", dateOfBirth=").append(customerData.getDateOfBirth())
-                .append(", address=").append(customerData.getCustomerAddress())
-                .append(", numberOfAccounts=").append(customerAccountsSize)
-                .append(", accounts=[");
-
-        if (accounts != null && customerAccountsSize > 0) {
-            for (int i = 0; i < customerAccountsSize; i++) {
-                if (i > 0) sb.append(", ");
-                sb.append("Account ").append(i + 1).append(": ").append(accounts[i].toString());
-            }
-        } else {
-            sb.append("No accounts");
-        }
-
-        sb.append("]}");
-        return sb.toString();
-    }
-
-    @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         Customer customer = (Customer) object;
-        return customerAccountsSize == customer.customerAccountsSize && Objects.equals(customerData, customer.customerData) && Objects.deepEquals(accounts, customer.accounts);
+        return Objects.equals(customerData, customer.customerData) && Objects.equals(accounts, customer.accounts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(customerData, Arrays.hashCode(accounts), customerAccountsSize);
+        return Objects.hash(customerData, accounts);
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "accounts=" + accounts +
+                ", customerData=" + customerData +
+                '}';
     }
 }

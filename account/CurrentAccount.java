@@ -1,5 +1,7 @@
 package account;
 
+import exception.InvalidAmountException;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -18,7 +20,7 @@ public class CurrentAccount extends Account {
 
     public void setOverdraftLimit(double overdraftLimit) {
         if (overdraftLimit < 0) {
-            throw new IllegalArgumentException("Overdraft limit cannot be negative.");
+            throw new InvalidAmountException("Overdraft limit cannot be negative.");
         }
         this.overdraftLimit = overdraftLimit;
     }
@@ -26,7 +28,7 @@ public class CurrentAccount extends Account {
     @Override
     public void deposit(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("Deposit amount must be positive.");
+            throw new InvalidAmountException("Deposit amount must be positive.");
         }
         setBalance(getBalance() + amount);
     }
@@ -34,7 +36,7 @@ public class CurrentAccount extends Account {
     @Override
     public void deposit(double amount, String description) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("Deposit amount must be positive.");
+            throw new InvalidAmountException("Deposit amount must be positive.");
         }
         setBalance(getBalance() + amount);
         System.out.println("Deposit description: " + description);
@@ -44,7 +46,7 @@ public class CurrentAccount extends Account {
     @Override
     public void withdraw(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("Withdrawal amount must be positive.");
+            throw new InvalidAmountException("Withdrawal amount must be positive.");
         }
         double newBalance = getBalance() - amount;
         if (newBalance < -overdraftLimit) {
@@ -57,7 +59,7 @@ public class CurrentAccount extends Account {
     @Override
     public void withdraw(double amount, String reason) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("Withdrawal amount must be positive.");
+            throw new InvalidAmountException("Withdrawal amount must be positive.");
         }
         double newBalance = getBalance() - amount;
         if (newBalance < -overdraftLimit) {

@@ -32,16 +32,28 @@ public class Bank {
     }
 
     public double calculateTotalBankBalance() {
-        double Balance = 0.0;
+        double totalBalance = 0.0;
 
-        for (Department department : departments){
-            for (Customer customer: department.getCustomers()){
-                for(CustomerAccount customerAccount: customer.getAccounts()){
-                    Balance+= customerAccount.getAccount().getBalance();
+        for (Department department : departments) {
+            for (Customer customer : department.getCustomers()) {
+                for (CustomerAccount customerAccount : customer.getAccounts()) {
+                    // Check each type of account and add its balance to the total
+                    if (customerAccount.getCurrentAccount() != null) {
+                        totalBalance += customerAccount.getCurrentAccount().getBalance();
+                    }
+                    if (customerAccount.getSavingsAccount() != null) {
+                        totalBalance += customerAccount.getSavingsAccount().getBalance();
+                    }
+                    if (customerAccount.getLoanAccount() != null) {
+                        // Assuming you want to account for loan balances, but remember:
+                        // Loan accounts may have negative balances or outstanding loan amounts.
+                        // You might want to handle it differently, e.g., adding positive balances only.
+                        totalBalance += customerAccount.getLoanAccount().getBalance(); // Check this logic based on your needs.
+                    }
                 }
             }
         }
-        return Balance;
+        return totalBalance;
     }
 
     public Set<Department> getDepartments() {

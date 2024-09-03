@@ -1,5 +1,6 @@
 package account;
 
+import exception.InvalidAmountException;
 import util.FinancialUtils;
 
 import java.time.LocalDate;
@@ -41,7 +42,7 @@ public class SavingsAccount extends Account implements InterestCalculable {
 
     public void setInterestRate(double interestRate) {
         if (interestRate < 0) {
-            throw new IllegalArgumentException("Interest rate cannot be negative.");
+            throw new InvalidAmountException("Interest rate cannot be negative.");
         }
         this.interestRate = interestRate;
     }

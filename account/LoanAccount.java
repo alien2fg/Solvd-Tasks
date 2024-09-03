@@ -1,5 +1,6 @@
 package account;
 
+import exception.InvalidAmountException;
 import util.FinancialUtils;
 
 import java.time.LocalDate;
@@ -46,7 +47,7 @@ public class LoanAccount extends Account implements LoanManageable{
     @Override
     public void deposit(double amount, String description) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("Payment amount must be positive.");
+            throw new InvalidAmountException("Payment amount must be positive.");
         }
 
         loanAmount -= amount;
@@ -76,7 +77,7 @@ public class LoanAccount extends Account implements LoanManageable{
 
     public void setLoanAmount(double loanAmount) {
         if (loanAmount < 0) {
-            throw new IllegalArgumentException("Loan amount cannot be negative.");
+            throw new InvalidAmountException("Loan amount cannot be negative.");
         }
         this.loanAmount = loanAmount;
     }
