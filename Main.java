@@ -11,14 +11,15 @@ import exception.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
             Bank bank = new Bank("My Bank");
-            Customer[] customers = new Customer[1];
-            int customerCount = 0;
+            ArrayList<Customer> customers = new ArrayList<>();
 
             System.out.println("Welcome to the Bank Management System");
             System.out.println("Enter department location:");
@@ -37,7 +38,7 @@ public class Main {
                 try {
                     switch (choice) {
                         case 1:
-                            addCustomer(scanner, department, customers, customerCount);
+                            addCustomer(scanner, department, customers);
                             break;
                         case 2:
                             addAccount(scanner, department);
@@ -71,7 +72,7 @@ public class Main {
         System.out.print("Enter your choice: ");
     }
 
-    private static void addCustomer(Scanner scanner, Department department, Customer[] customers, int customerCount) {
+    private static void addCustomer(Scanner scanner, Department department, ArrayList<Customer> customers) {
         try {
             System.out.println("Enter customer first name:");
             String firstName = scanner.nextLine();
@@ -86,15 +87,10 @@ public class Main {
             String city = scanner.nextLine();
             CustomerAddress address = new CustomerAddress(street, city);
 
-            if (customerCount >= customers.length) {
-                Customer[] newCustomers = new Customer[customers.length + 1];
-                System.arraycopy(customers, 0, newCustomers, 0, customers.length);
-                customers = newCustomers;
-            }
 
             CustomerData customerData = new CustomerData(address, dateOfBirth, firstName, lastName);
             Customer customer = new Customer(customerData);
-            customers[customerCount++] = customer;
+            customers.add(customer);
             department.addCustomer(customer);
 
             System.out.println("Customer added successfully.");
@@ -173,7 +169,7 @@ public class Main {
             }
             Transaction transaction = new Transaction(transactionAmount, description, LocalDate.now());
 
-            CustomerAccount customerAccount = new CustomerAccount(account, new Transaction[]{transaction});
+            CustomerAccount customerAccount = new CustomerAccount(account, new ArrayList<>(List.of(transaction)));
             customer.addCustomerAccount(customerAccount);
 
             System.out.println("Account added successfully.");

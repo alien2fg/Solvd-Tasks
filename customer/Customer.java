@@ -1,18 +1,17 @@
 package customer;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import customlinkedlist.CustomLinkedList;
 import java.util.Objects;
 
 public class Customer implements CustomerInfoProvider{
     private CustomerData customerData;
-    private List<CustomerAccount> accounts;
+    private CustomLinkedList<CustomerAccount> accounts;
 
 
     public Customer(CustomerData customerData) {
         this.customerData = customerData;
-        this.accounts=new ArrayList<>();
+        this.accounts=new CustomLinkedList<>();
     }
 
     public void addCustomerAccount(CustomerAccount customerAccount) {
@@ -29,15 +28,15 @@ public class Customer implements CustomerInfoProvider{
         return customerData.getFirstName() + " " + customerData.getLastName();
     }
 
-    public List<CustomerAccount> getAccounts() {
-        return accounts;
-    }
-
     public CustomerAddress getCustomerAddress() {
         return customerData.getCustomerAddress();
     }
 
-    public void setAccounts(List<CustomerAccount> accounts) {
+    public CustomLinkedList<CustomerAccount> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(CustomLinkedList<CustomerAccount> accounts) {
         this.accounts = accounts;
     }
 

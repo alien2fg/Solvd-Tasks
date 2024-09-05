@@ -8,20 +8,18 @@ import transaction.Transaction;
 import transaction.TransactionProcessable;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class CustomerAccount implements TransactionProcessable {
     private LoanAccount loanAccount;
     private SavingsAccount savingsAccount;
     private CurrentAccount currentAccount;
-    private List<Transaction> transactions;
+    private Map<LocalDate, List<Transaction>> transactionsByDate; //Transactions are assigned appropriate dates.
     private static int numberOfAccounts;
 
 
-    public CustomerAccount(Account account, Transaction[] transactions) {
-        this.transactions = new ArrayList<>(List.of(transactions));
+    public CustomerAccount(Account account, ArrayList<Transaction> transactions) {
+        this.transactionsByDate = new HashMap<>();
         numberOfAccounts++;
 
         if (account instanceof LoanAccount) {
@@ -30,6 +28,9 @@ public class CustomerAccount implements TransactionProcessable {
             this.savingsAccount = (SavingsAccount) account;
         } else if (account instanceof CurrentAccount) {
             this.currentAccount = (CurrentAccount) account;
+        }
+        for (Transaction transaction : transactions) {
+            addTransaction(transaction.getAmount(), transaction.getDescription(), transaction.getTransactionDate());
         }
     }
 
@@ -65,18 +66,21 @@ public class CustomerAccount implements TransactionProcessable {
         CustomerAccount.numberOfAccounts = numberOfAccounts;
     }
 
-    public List<Transaction> getTransactions() {
-        return transactions;
+    public Map<LocalDate, List<Transaction>> getTransactionsByDate() {
+        return transactionsByDate;
     }
 
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
+    public void setTransactionsByDate(Map<LocalDate, List<Transaction>> transactionsByDate) {
+        this.transactionsByDate = transactionsByDate;
     }
+
 
     @Override
     public void addTransaction(double amount, String description, LocalDate date) {
         Transaction newTransaction = new Transaction(amount, description, date);
-        this.transactions.add(newTransaction);
+
+
+        transactionsByDate.computeIfAbsent(date, k -> new ArrayList<>()).add(newTransaction);
 
 
         if (currentAccount != null) {
@@ -97,7 +101,6 @@ public class CustomerAccount implements TransactionProcessable {
             if (amount >= 0) {
                 loanAccount.deposit(amount, description);
             } else {
-
                 System.out.println("Withdrawals are not supported for loan accounts.");
             }
         }
@@ -105,22 +108,13 @@ public class CustomerAccount implements TransactionProcessable {
 
     @Override
     public double getTransactionAmount(LocalDate date) {
-        for (Transaction transaction : transactions) {
-            if (transaction.getTransactionDate().equals(date)) {
-                return transaction.getAmount();
-            }
+        List<Transaction> transactionsOnDate = transactionsByDate.get(date);
+        if (transactionsOnDate != null) {
+            return transactionsOnDate.stream()
+                    .mapToDouble(Transaction::getAmount)
+                    .sum();
         }
         return 0.0;
-    }
-
-    @Override
-    public String toString() {
-        return "CustomerAccount{" +
-                "loanAccount=" + (loanAccount != null ? loanAccount.toString() : "null") +
-                ", savingsAccount=" + (savingsAccount != null ? savingsAccount.toString() : "null") +
-                ", currentAccount=" + (currentAccount != null ? currentAccount.toString() : "null") +
-                ", transactions=" + (transactions != null ? transactions.toString() : "null") +
-                '}';
     }
 
     @Override
@@ -128,14 +122,24 @@ public class CustomerAccount implements TransactionProcessable {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         CustomerAccount that = (CustomerAccount) object;
-        return Objects.equals(loanAccount, that.loanAccount) &&
-                Objects.equals(savingsAccount, that.savingsAccount) &&
-                Objects.equals(currentAccount, that.currentAccount) &&
-                Objects.equals(transactions, that.transactions);
+        return Objects.equals(loanAccount, that.loanAccount) && Objects.equals(savingsAccount, that.savingsAccount) && Objects.equals(currentAccount, that.currentAccount) && Objects.equals(transactionsByDate, that.transactionsByDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(loanAccount, savingsAccount, currentAccount, transactions);
+        return Objects.hash(loanAccount, savingsAccount, currentAccount, transactionsByDate);
+    }
+
+    @Override
+    public String toString() {
+        return "CustomerAccount{" +
+                "currentAccount=" + currentAccount +
+                ", loanAccount=" + loanAccount +
+                ", savingsAccount=" + savingsAccount +
+                ", transactionsByDate=" + transactionsByDate +
+                '}';
     }
 }
+
+
+
